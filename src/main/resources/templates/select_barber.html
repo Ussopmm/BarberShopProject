@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of barbers</title>
+</head>
+<body>
+
+<div th:each="barber : ${barbers}">
+    <a th:href="@{/book/order(serviceId=${serviceId}, barberId=${barber.id})}">
+    <div class="card bg-secondary h-100">
+        <div class="card-body ps-4">
+            <h3 class="text-uppercase mb-3" th:text="${barber.getEmail()}"></h3>
+            <p class="text-uppercase text-primary" th:text="${barber.getPhoneNumber()}"></p>
+        </div>
+    </div>
+    </a>
+</div>
+
+</body>
+</html>
