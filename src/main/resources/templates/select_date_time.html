@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Selecting Date time for Customer</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
 <div class="container">
@@ -21,17 +24,17 @@
                         <p class="mb-0">Morning</p>
                         <div class="col-auto" th:each="time : ${availableTime}"
                              th:if="${time.compareTo('12:00') < 0}">
-                            <button th:text="${time}" class="btn btn-secondary"></button>
+                            <button class="btn btn-secondary time-btn" th:text="${time}" data-time="${time}">${time}</button>
                         </div>
                         <p class="mb-0">Afternoon</p>
                         <div class="col-auto" th:each="time : ${availableTime}"
                              th:if="${time.compareTo('12:00') >= 0 && time.compareTo('18:00') < 0}">
-                            <button th:text="${time}" class="btn btn-secondary"></button>
+                            <button class="btn btn-secondary time-btn" th:attr="data-time=${time}" th:text="${time}">[[${time}]]</button>
                         </div>
                         <p class="mb-0">Evening</p>
                         <div class="col-auto" th:each="time : ${availableTime}"
                              th:if="${time.compareTo('18:00') >= 0}">
-                            <button th:text="${time}" class="btn btn-secondary"></button>
+                            <button class="btn btn-secondary time-btn" th:text="${time}" data-time="${time}">${time}</button>
                         </div>
                     </div>
                 </div>
@@ -40,11 +43,71 @@
         <div class="col-md-5">
             <div class="card h-100">
                 <div class="card-body showcase-wrapper">
-                    <div id="myCalendarWrapper"></div>
+                    <label for="datepicker">Select Date:</label>
+                    <input type="text" id="datepicker">
                 </div>
             </div>
         </div>
     </div>
 </div>
+<form id="bookingForm" class="d-none appointment_form" th:method="GET" th:action="@{/book/customer-info}">
+    <input name="serviceId" type="hidden" th:value="${service.get().id}">
+    <input name="barberId" type="hidden" th:value="${barber}">
+    <input name="dateTime" id="dateTime" type="hidden" value="">
+    <input name="time" id="time" type="hidden" value="">
+</form>
+
+<!--<script>-->
+<!--    $(function () {-->
+<!--        $("#datepicker").datepicker({-->
+<!--            dateFormat: "yy-mm-dd",-->
+<!--            onSelect: function (dateText) {-->
+<!--                $("#dateTime").val(dateText);-->
+<!--            }-->
+<!--        });-->
+
+<!--        $(".time-btn").on("click", function() {-->
+<!--            var time = $(this).data("time");-->
+<!--            $("#time").val(time);-->
+<!--            $("#bookingForm").submit(); // Отправка формы-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            dateFormat: "yy-mm-dd",
+            onSelect: function (dateText) {
+                $("#dateTime").val(dateText);
+                // Обновляем URL с новым значением даты
+                updateURL(dateText);
+                reloadPage();
+            }
+        });
+
+        $(".time-btn").on("click", function() {
+            var time = $(this).data("time");
+            $("#time").val(time);
+            $("#bookingForm").submit(); // Отправка формы
+        });
+    });
+
+    // Функция для обновления URL с новым значением даты
+    function updateURL(newDate) {
+        // Получаем текущий URL страницы
+        var url = new URL(window.location.href);
+        // Устанавливаем новое значение даты в параметре "dateString"
+        url.searchParams.set('dateTime', newDate);
+        // Обновляем URL страницы с новым значением даты
+        window.history.replaceState({}, '', url);
+    }
+    // Функция для обновления страницы
+    function reloadPage() {
+        location.reload();
+    }
+</script>
+
+
 </body>
 </html>

@@ -1,13 +1,19 @@
 package io.ussopm.ReCreateBookingSystem.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Table(name = "barber")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Barber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

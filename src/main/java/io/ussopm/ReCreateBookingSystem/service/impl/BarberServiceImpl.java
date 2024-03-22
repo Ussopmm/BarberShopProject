@@ -17,10 +17,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BarberServiceImpl implements BarberService {
     private final BarberRepository barberRepository;
-    private final BookingRepository bookingRepository;
+
     @Override
     public List<Barber> getAllBarbers() {
         return barberRepository.findAll();
+    }
+
+    @Override
+    public Optional<Barber> getBarberById(Integer barberId) {
+        return barberRepository.findById(barberId);
     }
 
 
