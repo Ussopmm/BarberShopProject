@@ -24,7 +24,7 @@
                         <p class="mb-0">Morning</p>
                         <div class="col-auto" th:each="time : ${availableTime}"
                              th:if="${time.compareTo('12:00') < 0}">
-                            <button class="btn btn-secondary time-btn" th:text="${time}" data-time="${time}">${time}</button>
+                            <button class="btn btn-secondary time-btn" th:attr="data-time=${time}" th:text="${time}" >[[${time}]]</button>
                         </div>
                         <p class="mb-0">Afternoon</p>
                         <div class="col-auto" th:each="time : ${availableTime}"
@@ -34,7 +34,7 @@
                         <p class="mb-0">Evening</p>
                         <div class="col-auto" th:each="time : ${availableTime}"
                              th:if="${time.compareTo('18:00') >= 0}">
-                            <button class="btn btn-secondary time-btn" th:text="${time}" data-time="${time}">${time}</button>
+                            <button class="btn btn-secondary time-btn" th:attr="data-time=${time}" th:text="${time}" >[[${time}]]</button>
                         </div>
                     </div>
                 </div>
@@ -76,12 +76,23 @@
 
 <script>
     $(function () {
+        // Проверяем, есть ли сохраненное значение в Local Storage
+        var savedDate = localStorage.getItem('selectedDate');
+        if (savedDate) {
+            // Устанавливаем сохраненное значение в поле выбора даты
+            $("#datepicker").val(savedDate);
+            // Обновляем значение поля dateTime
+            $("#dateTime").val(savedDate);
+        }
+
         $("#datepicker").datepicker({
             dateFormat: "yy-mm-dd",
             onSelect: function (dateText) {
                 $("#dateTime").val(dateText);
                 // Обновляем URL с новым значением даты
                 updateURL(dateText);
+                // Сохраняем выбранную дату в Local Storage
+                localStorage.setItem('selectedDate', dateText);
                 reloadPage();
             }
         });
@@ -95,13 +106,11 @@
 
     // Функция для обновления URL с новым значением даты
     function updateURL(newDate) {
-        // Получаем текущий URL страницы
         var url = new URL(window.location.href);
-        // Устанавливаем новое значение даты в параметре "dateString"
         url.searchParams.set('dateTime', newDate);
-        // Обновляем URL страницы с новым значением даты
         window.history.replaceState({}, '', url);
     }
+
     // Функция для обновления страницы
     function reloadPage() {
         location.reload();
